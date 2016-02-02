@@ -9,7 +9,6 @@
   var sinonChai = require('sinon-chai');
   var expect = chai.expect;
   var path = require('path');
-  var proxyquire = require('proxyquire').noCallThru();
   var requireSubvert = require('require-subvert')(__dirname);
 
   chai.use(sinonChai);
