@@ -1,0 +1,36 @@
+{
+  "name": "node-alias",
+  "version": "1.0.0",
+  "description": "Alias the long version of a command to the short version, with optional messaging.",
+  "main": "index.js",
+  "engines": {
+    "node": ">=0.10"
+  },
+  "scripts": {
+    "test": "jasmine JASMINE_CONFIG_PATH=./test/jasmine.json"
+  },
+  "repository": "justinhelmer/node-alias",
+  "keywords": [
+    "node",
+    "alias",
+    "short",
+    "command",
+    "bin",
+    "long"
+  ],
+  "author": "Justin Helmer <jhelmer25@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/justinhelmer/node-alias/issues"
+  },
+  "homepage": "https://github.com/justinhelmer/node-alias#readme",
+  "dependencies": {
+    "chalk": "^1.1.1",
+    "lodash": "^4.1.0"
+  },
+  "devDependencies": {
+    "jasmine": "^2.4.1",
+    "proxyquire": "^1.7.4",
+    "require-subvert": "^0.1.0"
+  }
+}
