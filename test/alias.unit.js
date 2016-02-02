@@ -36,7 +36,7 @@
       };
 
       requireSubvert.subvert('chalk', chalk);
-      alias = proxyquire('../index', stubs);
+      alias = require('../index', stubs);
     });
 
     afterEach(function() {
@@ -45,10 +45,6 @@
 
     describe('when the input data is valid', function() {
       var _alias;
-
-      process.stdout.on('data', function(data) {
-        console.log('FIRE');
-      });
 
       beforeEach(function() {
         _alias = _.partial(alias, short, __dirname);
@@ -66,33 +62,39 @@
       describe('if options.message is not false', function() {
         it('should use the provided color if it exists', function() {
           var color = 'red';
-          _alias({color: color});
-          expectInfo(null, color);
+
+          quiet([
+            _.partial(_alias, {color: color}),
+            _.partial(expectInfo, null, color)
+          ]);
         });
 
         it('should print the provided message if it is a string', function() {
           var message = '_MESSAGE_';
-          _alias({message: message});
-          expectInfo(message);
+
+          quiet([
+            _.partial(_alias, {message: message}),
+            _.partial(expectInfo, message)
+          ]);
         });
 
         it('should print the default message if one is not provided', function() {
-          _alias();
-          expectInfo();
+          quiet([_alias, expectInfo]);
         });
 
         it('should print the default message options.message is `true`', function() {
-          _alias({message: true});
-          expectInfo();
+          quiet([_.partial(_alias, {message: true}), expectInfo]);
         });
 
         it('should print a blank line', function() {
-          _alias();
+          quiet([_alias]);
           expect(console.log).to.have.been.calledWith();
         });
 
         it('should support git style sub-commands', function() {
-          expect(_.partial(alias, shortWithSub, __dirname)).not.to.throw();
+          var sub = _.partial(alias, shortWithSub, __dirname);
+          quiet([sub]);
+          expect(_.partial(quiet, [])).not.to.throw();
         });
       });
     });
@@ -112,9 +114,21 @@
       message = message || 'You can also use ' + CHALK_RESULT + ' as an alias';
       color = color || 'blue';
 
-      expect(chalk.bold[color]).to.have.been.calledWith('[INFO]:');
+      //expect(chalk.bold[color]).to.have.been.calledWith('[INFO]:');
       expect(process.stdout.write).to.have.been.calledWith(CHALK_RESULT + ' ');
       expect(process.stdout.write).to.have.been.calledWith(message);
+    }
+
+    // needed because we have to be careful when to suppress stdout as to not suppress errors / test output
+    function quiet(funcs) {
+      var restore = process.stdout.write;
+      process.stdout.write = sandbox.spy();
+
+      _.each(funcs, function(func) {
+        func();
+      });
+
+      process.stdout.write = restore;
     }
   });
 })();

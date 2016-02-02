@@ -30,9 +30,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "coveralls": "^2.11.6",
     "mocha": "^2.4.5",
-    "proxyquire": "^1.7.4",
     "require-subvert": "^0.1.0",
     "sinon": "^1.17.3",
     "sinon-chai": "^2.8.0"
