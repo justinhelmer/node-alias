@@ -3,6 +3,7 @@ Alias the long version of a command to the short version, with optional messagin
 
 [![npm package](https://badge.fury.io/js/node-alias.svg)](https://www.npmjs.com/package/node-alias)
 [![node version](https://img.shields.io/node/v/node-alias.svg?style=flat)](http://nodejs.org/download/)
+[![build status](https://travis-ci.org/justinhelmer/node-alias.svg?branch=master)](https://travis-ci.org/justinhelmer/node-alias)
 [![dependency status](https://david-dm.org/justinhelmer/node-alias.svg)](https://github.com/justinhelmer/node-alias)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/justinhelmer/node-alias/issues)
 
