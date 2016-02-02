@@ -14,8 +14,8 @@
   chai.use(sinonChai);
 
   var sandbox = sinon.sandbox.create();
-  var short = 'foo';
-  var shortWithSub = 'foo sub';
+  var short = 'test';
+  var shortWithSub = 'test sub';
 
 
   var fullpath = path.resolve(__dirname);
@@ -35,7 +35,8 @@
       };
 
       requireSubvert.subvert('chalk', chalk);
-      alias = require('../index', stubs);
+      requireSubvert.require('../index');
+      alias = require('../index');
     });
 
     afterEach(function() {
@@ -104,7 +105,7 @@
       });
 
       it('should throw an error if `shortPath` is not provided', function() {
-        expect(_.partial(alias, 'foo')).to.throw('Missing `shortPath`');
+        expect(_.partial(alias, short)).to.throw('Missing `shortPath`');
       });
     });
 
@@ -113,7 +114,7 @@
       message = message || 'You can also use ' + CHALK_RESULT + ' as an alias';
       color = color || 'blue';
 
-      //expect(chalk.bold[color]).to.have.been.calledWith('[INFO]:');
+      expect(chalk.bold[color]).to.have.been.calledWith('[INFO]:');
       expect(process.stdout.write).to.have.been.calledWith(CHALK_RESULT + ' ');
       expect(process.stdout.write).to.have.been.calledWith(message);
     }
