@@ -7,7 +7,7 @@
     "node": ">=0.10"
   },
   "scripts": {
-    "test": "jasmine JASMINE_CONFIG_PATH=./test/jasmine.json"
+    "test": "mocha"
   },
   "repository": "justinhelmer/node-alias",
   "keywords": [
@@ -29,8 +29,12 @@
     "lodash": "^4.1.0"
   },
   "devDependencies": {
-    "jasmine": "^2.4.1",
+    "chai": "^3.5.0",
+    "coveralls": "^2.11.6",
+    "mocha": "^2.4.5",
     "proxyquire": "^1.7.4",
-    "require-subvert": "^0.1.0"
+    "require-subvert": "^0.1.0",
+    "sinon": "^1.17.3",
+    "sinon-chai": "^2.8.0"
   }
 }

@@ -4,43 +4,63 @@
   var CHALK_RESULT = '_CHALK_RESULT_';
 
   var _ = require('lodash');
+  var chai = require('chai');
+  var sinon = require('sinon');
+  var sinonChai = require('sinon-chai');
+  var expect = chai.expect;
   var path = require('path');
   var proxyquire = require('proxyquire').noCallThru();
   var requireSubvert = require('require-subvert')(__dirname);
 
-  var chalk = {
-    bold: {
-      blue: jasmine.createSpy('blue').and.callFake(chalkResult),
-      red: jasmine.createSpy('red').and.callFake(chalkResult)
-    }
-  };
+  chai.use(sinonChai);
 
-  requireSubvert.subvert('chalk', chalk);
-
+  var sandbox = sinon.sandbox.create();
   var short = 'foo';
   var shortWithSub = 'foo sub';
+
 
   var fullpath = path.resolve(__dirname);
   var stubs = {};
   stubs[fullpath + '/' + short] = {};
   stubs[fullpath + '/' + _.kebabCase(shortWithSub)] = {};
 
-  var alias = proxyquire('../index', stubs);
+  describe('alias (exported module)', function() {
+    var alias, chalk;
 
-  describe('alias', function() {
+    beforeEach(function() {
+      chalk = {
+        bold: {
+          blue: sandbox.stub().returns(CHALK_RESULT),
+          red: sandbox.stub().returns(CHALK_RESULT)
+        }
+      };
+
+      requireSubvert.subvert('chalk', chalk);
+      alias = proxyquire('../index', stubs);
+    });
+
+    afterEach(function() {
+      sandbox.restore();
+    });
+
     describe('when the input data is valid', function() {
       var _alias;
 
+      process.stdout.on('data', function(data) {
+        console.log('FIRE');
+      });
+
       beforeEach(function() {
         _alias = _.partial(alias, short, __dirname);
-        spyOn(process.stdout, 'write');
+
+        sandbox.spy(process.stdout, 'write');
+        sandbox.spy(console, 'log');
       });
 
       it('if options.message is false should log nothing', function() {
-        spyOn(console, 'log');
         _alias({message: false});
-        expect(process.stdout.write).not.toHaveBeenCalled();
-        expect(console.log).not.toHaveBeenCalled();
+        expect(process.stdout.write).not.to.have.been.called;
+        expect(console.log).not.to.have.been.called;
       });
 
       describe('if options.message is not false', function() {
@@ -67,41 +87,34 @@
         });
 
         it('should print a blank line', function() {
-          spyOn(console, 'log');
           _alias();
-          expect(console.log).toHaveBeenCalledWith();
+          expect(console.log).to.have.been.calledWith();
         });
 
         it('should support git style sub-commands', function() {
-          alias(shortWithSub, __dirname);
-          expectInfo(null, null, shortWithSub);
+          expect(_.partial(alias, shortWithSub, __dirname)).not.to.throw();
         });
       });
     });
 
     describe('when the input data is not valid', function() {
       it('should throw an error if `short` is not provided', function() {
-        expect(alias).toThrowError('Missing `short`');
+        expect(alias).to.throw('Missing `short`');
       });
 
       it('should throw an error if `shortPath` is not provided', function() {
-        expect(_.partial(alias, 'foo')).toThrowError('Missing `shortPath`');
+        expect(_.partial(alias, 'foo')).to.throw('Missing `shortPath`');
       });
     });
 
     // Make the expectations each time to validate they don't change when options change
-    function expectInfo(message, color, command) {
-      command = command || short;
-      message = message || 'You can also use ' + command + ' as an alias';
+    function expectInfo(message, color) {
+      message = message || 'You can also use ' + CHALK_RESULT + ' as an alias';
       color = color || 'blue';
 
-      expect(chalk.bold[color]).toHaveBeenCalledWith('[INFO]:');
-      expect(process.stdout.write).toHaveBeenCalledWith('[INFO]: ');
-      expect(process.stdout.write).toHaveBeenCalledWith(message);
+      expect(chalk.bold[color]).to.have.been.calledWith('[INFO]:');
+      expect(process.stdout.write).to.have.been.calledWith(CHALK_RESULT + ' ');
+      expect(process.stdout.write).to.have.been.calledWith(message);
     }
   });
-
-  function chalkResult(message) {
-    return message;
-  }
 })();
