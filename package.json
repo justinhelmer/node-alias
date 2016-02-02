@@ -1,6 +1,6 @@
 {
   "name": "node-alias",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Alias the long version of a command to the short version, with optional messaging.",
   "main": "index.js",
   "engines": {
